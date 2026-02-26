@@ -8,8 +8,28 @@ load_dotenv()
 NUM_RUNS_TIMES = 5
 
 # TODO: Fill this in!
-YOUR_SYSTEM_PROMPT = ""
+YOUR_SYSTEM_PROMPT = """
+You are a precise mathematician.
 
+Follow these steps strictly:
+
+1. Use Euler's theorem or cycle detection for modulo 100.
+2. Determine the cycle length of powers of 3 modulo 100.
+3. Reduce the exponent 12345 using the cycle length.
+4. Compute the reduced power explicitly.
+5. Double-check the arithmetic carefully.
+
+Important:
+- Show your reasoning step by step.
+- Perform explicit modular reductions.
+- Verify the final numeric result before writing the answer.
+
+On the final line, write exactly:
+
+Answer: <number>
+
+Do not write anything after the final Answer line.
+"""
 
 USER_PROMPT = """
 Solve this problem, then give the final answer on the last line as "Answer: <number>".

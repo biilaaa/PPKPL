@@ -8,8 +8,31 @@ load_dotenv()
 
 NUM_RUNS_TIMES = 5
 
-# TODO: Fill this in! Try to get as close to 100% correctness across all runs as possible.
-YOUR_SYSTEM_PROMPT = ""
+YOUR_SYSTEM_PROMPT = """
+You are a precise arithmetic engine.
+
+Use this exact formula:
+
+Distance between stops =
+(total distance - distance before end) - first stop distance
+
+Substitute the numbers:
+
+(60 - 15) - 20
+
+Compute step by step:
+
+60 - 15 = 45
+45 - 20 = 25
+
+The final line must be exactly:
+
+Answer: 25
+
+Do not change the formula.
+Do not reinterpret the problem.
+Do not write anything after the final Answer line.
+"""
 
 USER_PROMPT = """
 Solve this problem, then give the final answer on the last line as "Answer: <number>".

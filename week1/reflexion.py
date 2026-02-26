@@ -15,8 +15,31 @@ Keep the implementation minimal.
 """
 
 # TODO: Fill this in!
-YOUR_REFLEXION_PROMPT = ""
+YOUR_REFLEXION_PROMPT = """
+You are a senior Python engineer fixing a failing implementation.
 
+You are given:
+- The previous incorrect implementation.
+- The test failures and diagnostics.
+
+Your task:
+1. Carefully analyze why the previous implementation failed.
+2. Fix all logical mistakes.
+3. Ensure the implementation satisfies ALL password requirements:
+   - At least 8 characters
+   - At least one lowercase letter
+   - At least one uppercase letter
+   - At least one digit
+   - At least one special character from !@#$%^&*()-_
+   - No whitespace allowed
+
+Output requirements:
+- Output ONLY a single fenced Python code block.
+- Define is_valid_password(password: str) -> bool
+- No prose.
+- No comments.
+- Minimal implementation.
+"""
 
 # Ground-truth test suite used to evaluate generated code
 SPECIALS = set("!@#$%^&*()-_")
@@ -93,6 +116,7 @@ def generate_initial_function(system_prompt: str) -> str:
 
 def your_build_reflexion_context(prev_code: str, failures: List[str]) -> str:
     """TODO: Build the user message for the reflexion step using prev_code and failures.
+    
 
     Return a string that will be sent as the user content alongside the reflexion system prompt.
     """
