@@ -1,30 +1,34 @@
 from __future__ import annotations
 
-from pathlib import Path
 from typing import Any, Dict, Optional
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
-
+from .config import APP_TITLE, FRONTEND_DIR, FRONTEND_INDEX
 from .db import init_db
 from .routers import action_items, notes
-from . import db
 
+# Initialize database schema on startup so routes can rely on it.
 init_db()
 
-app = FastAPI(title="Action Item Extractor")
+# Main FastAPI application instance with a clear, centralized title.
+app = FastAPI(title=APP_TITLE)
 
 
 @app.get("/", response_class=HTMLResponse)
 def index() -> str:
-    html_path = Path(__file__).resolve().parents[1] / "frontend" / "index.html"
-    return html_path.read_text(encoding="utf-8")
+    """
+    Serve the main frontend HTML page.
+
+    This keeps the backend responsible for returning the static index while
+    the frontend assets are served from the static mount below.
+    """
+    return FRONTEND_INDEX.read_text(encoding="utf-8")
 
 
 app.include_router(notes.router)
 app.include_router(action_items.router)
 
-
-static_dir = Path(__file__).resolve().parents[1] / "frontend"
-app.mount("/static", StaticFiles(directory=str(static_dir)), name="static")
+# Serve static frontend assets from the centralized frontend directory.
+app.mount("/static", StaticFiles(directory=str(FRONTEND_DIR)), name="static")

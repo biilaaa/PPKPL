@@ -10,6 +10,26 @@ from .. import db
 router = APIRouter(prefix="/notes", tags=["notes"])
 
 
+@router.get("")
+def list_notes() -> List[Dict[str, Any]]:
+    """
+    Retrieve all saved notes from the database.
+
+    Returns a JSON array of note objects, each containing id, content,
+    and created_at fields. If the database query fails, a 500 error is
+    returned.
+    """
+    try:
+        rows = db.list_notes()
+    except Exception:
+        raise HTTPException(status_code=500, detail="failed to retrieve notes")
+
+    return [
+        {"id": row["id"], "content": row["content"], "created_at": row["created_at"]}
+        for row in rows
+    ]
+
+
 @router.post("")
 def create_note(payload: Dict[str, Any]) -> Dict[str, Any]:
     content = str(payload.get("content", "")).strip()

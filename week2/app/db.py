@@ -1,13 +1,9 @@
 from __future__ import annotations
 
 import sqlite3
-from pathlib import Path
 from typing import Optional
 
-
-BASE_DIR = Path(__file__).resolve().parents[1]
-DATA_DIR = BASE_DIR / "data"
-DB_PATH = DATA_DIR / "app.db"
+from .config import DATA_DIR, DB_PATH
 
 
 def ensure_data_directory_exists() -> None:
