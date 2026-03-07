@@ -17,12 +17,14 @@ class NoteRead(BaseModel):
 
 class ActionItemCreate(BaseModel):
     description: str
+    priority: str = "medium"
 
 
 class ActionItemRead(BaseModel):
     id: int
     description: str
     completed: bool
+    priority: str
 
     class Config:
         from_attributes = True
