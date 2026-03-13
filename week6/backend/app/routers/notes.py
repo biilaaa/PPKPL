@@ -98,29 +98,78 @@ def debug_hash_md5(q: str) -> dict[str, str]:
 
     return {"algo": "md5", "hex": hashlib.md5(q.encode()).hexdigest()}
 
+import ast
+
+import ast
+import operator as op
+
+operators = {
+    ast.Add: op.add,
+    ast.Sub: op.sub,
+    ast.Mult: op.mul,
+    ast.Div: op.truediv,
+}
+
+def safe_eval(expr: str):
+    try:
+        node = ast.parse(expr, mode="eval").body
+
+        if isinstance(node, ast.BinOp):
+            left = node.left.n
+            right = node.right.n
+            operator = operators[type(node.op)]
+            return operator(left, right)
+
+        elif isinstance(node, ast.Num):
+            return node.n
+
+        else:
+            raise ValueError("Unsafe expression")
+
+    except Exception:
+        raise HTTPException(status_code=400, detail="Invalid expression")
+
+    except Exception:
+        raise HTTPException(status_code=400, detail="Invalid expression")
 
 @router.get("/debug/eval")
 def debug_eval(expr: str) -> dict[str, str]:
-    result = str(eval(expr))  # noqa: S307
+    result = str(safe_eval(expr))
     return {"result": result}
-
-
+   
 @router.get("/debug/run")
 def debug_run(cmd: str) -> dict[str, str]:
     import subprocess
 
-    completed = subprocess.run(cmd, shell=True, capture_output=True, text=True)  # noqa: S602,S603
-    return {"returncode": str(completed.returncode), "stdout": completed.stdout, "stderr": completed.stderr}
+    args = cmd.split()
 
+    if not args:
+        raise HTTPException(status_code=400, detail="Command required")
+
+    completed = subprocess.run(
+        args,
+        shell=False,
+        capture_output=True,
+        text=True
+    )
+
+    return {
+        "returncode": str(completed.returncode),
+        "stdout": completed.stdout,
+        "stderr": completed.stderr,
+    }
+
+import requests
 
 @router.get("/debug/fetch")
 def debug_fetch(url: str) -> dict[str, str]:
-    from urllib.request import urlopen
+    try:
+        res = requests.get(url, timeout=5)
+        body = res.text[:1024]
+    except Exception as exc:
+        raise HTTPException(status_code=400, detail=str(exc))
 
-    with urlopen(url) as res:  # noqa: S310
-        body = res.read(1024).decode(errors="ignore")
     return {"snippet": body}
-
 
 @router.get("/debug/read")
 def debug_read(path: str) -> dict[str, str]:
