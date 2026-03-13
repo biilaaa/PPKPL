@@ -2,6 +2,17 @@ from datetime import datetime
 
 from pydantic import BaseModel
 
+from pydantic import BaseModel, validator
+
+class ActionItemCreate(BaseModel):
+    title: str
+    description: str | None = None
+
+    @validator("title")
+    def title_must_not_be_empty(cls, value):
+        if not value.strip():
+            raise ValueError("Title cannot be empty")
+        return value
 
 class NoteCreate(BaseModel):
     title: str
