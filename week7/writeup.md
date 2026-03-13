@@ -91,11 +91,25 @@ c. Graphite Diamond generated code review
 
 a. Links to relevant commits/issues
 
-> TODO
+> https://github.com/biilaaa/PPKPL/pull/3
 
 b. PR Description
 
-> TODO
+> ## Task 3: Add new model relationships
+
+### Changes
+
+Added a relationship between Note and ActionItem models.
+
+### Implementation
+
+- Added `note_id` foreign key in ActionItem model
+- Added SQLAlchemy relationships between Note and ActionItem
+- A Note can now have multiple ActionItems
+
+### Benefits
+
+This allows action items to be associated with specific notes, improving the data model structure and enabling more meaningful relationships between stored notes and extracted tasks.
 
 c. Graphite Diamond generated code review
 
