@@ -22,3 +22,23 @@ def test_create_complete_list_and_patch_action_item(client):
     assert patched["description"] == "Updated"
 
 
+def test_list_action_items_pagination(client):
+    for i in range(5):
+        client.post("/action-items/", json={"description": f"Task {i}"})
+
+    response = client.get("/action-items/?skip=0&limit=2")
+
+    assert response.status_code == 200
+    data = response.json()
+    assert len(data) == 2
+
+
+def test_list_action_items_sorting(client):
+    client.post("/action-items/", json={"description": "Task A"})
+    client.post("/action-items/", json={"description": "Task B"})
+
+    response = client.get("/action-items/?sort=-created_at")
+
+    assert response.status_code == 200
+    data = response.json()
+    assert len(data) >= 2
